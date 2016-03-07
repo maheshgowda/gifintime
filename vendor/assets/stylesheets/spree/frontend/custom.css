@@ -1,0 +1,71 @@
+body{
+    background-color: #92d2bd;
+}
+
+.carousel{
+    padding: 0 0 30px;
+}
+
+#spree-header .nav a{
+    color: #3DA482;
+}
+
+#spree-header #header {
+    background: #fff;
+}
+
+#spree-header{
+    background: #fff;
+}
+
+#spree-header .nav a:hover, #spree-header .nav a:focus{
+    color: #000;
+    background-color: #92d2bd;
+}
+
+h5, .h5{
+    color: #000;
+}
+
+#spree-footer {
+    background: #ffffff;
+}
+
+a{
+    color: #3DA482;
+}
+
+p{
+    color:black;
+}
+
+
+.btn-success{
+    background-color: #92d2bd;
+}
+
+.btn-success:hover{
+    color: #000;
+    background-color: #3DA482;
+}
+
+.panel-footer {
+    background-color: #75B6A0;
+    color: black;
+    border-bottom-style: inset;
+    border-top-style: outset;
+    border-left-style: outset;
+    border-right-style: inset;
+}
+
+#spree-header #logo img {
+    width: 220px;
+}
+
+img {
+    vertical-align: text-top;
+}
+
+
+
+

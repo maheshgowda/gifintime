@@ -1,0 +1,16 @@
+#logo {
+    width: 100px;
+    height: 35px;
+}
+
+.container-fluid {
+    margin-right: auto;
+    margin-left: auto;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 10px;
+}
+
+.navbar-inverse{
+    background-color: #92d2bd;
+}

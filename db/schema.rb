@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151103121612) do
+ActiveRecord::Schema.define(version: 20160322115521) do
 
   create_table "ckeditor_assets", force: :cascade do |t|
     t.string   "data_file_name",               null: false
@@ -24,10 +24,12 @@ ActiveRecord::Schema.define(version: 20151103121612) do
     t.integer  "height"
     t.datetime "created_at",                   null: false
     t.datetime "updated_at",                   null: false
+    t.integer  "supplier_id"
   end
 
   add_index "ckeditor_assets", ["assetable_type", "assetable_id"], name: "idx_ckeditor_assetable"
   add_index "ckeditor_assets", ["assetable_type", "type", "assetable_id"], name: "idx_ckeditor_assetable_type"
+  add_index "ckeditor_assets", ["supplier_id"], name: "index_ckeditor_assets_on_supplier_id"
 
   create_table "friendly_id_slugs", force: :cascade do |t|
     t.string   "slug",                      null: false
@@ -431,9 +433,12 @@ ActiveRecord::Schema.define(version: 20151103121612) do
     t.string   "number"
     t.string   "cvv_response_code"
     t.string   "cvv_response_message"
+    t.integer  "payable_id"
+    t.string   "payable_type"
   end
 
   add_index "spree_payments", ["order_id"], name: "index_spree_payments_on_order_id"
+  add_index "spree_payments", ["payable_id", "payable_type"], name: "index_spree_payments_on_payable_id_and_payable_type"
   add_index "spree_payments", ["payment_method_id"], name: "index_spree_payments_on_payment_method_id"
   add_index "spree_payments", ["source_id", "source_type"], name: "index_spree_payments_on_source_id_and_source_type"
 
@@ -510,7 +515,7 @@ ActiveRecord::Schema.define(version: 20151103121612) do
   add_index "spree_product_translations", ["spree_product_id"], name: "index_spree_product_translations_on_spree_product_id"
 
   create_table "spree_products", force: :cascade do |t|
-    t.string   "name",                                         default: "",   null: false
+    t.string   "name",                                         default: "",    null: false
     t.text     "description"
     t.datetime "available_on"
     t.datetime "deleted_at"
@@ -519,12 +524,13 @@ ActiveRecord::Schema.define(version: 20151103121612) do
     t.string   "meta_keywords"
     t.integer  "tax_category_id"
     t.integer  "shipping_category_id"
-    t.datetime "created_at",                                                  null: false
-    t.datetime "updated_at",                                                  null: false
+    t.datetime "created_at",                                                   null: false
+    t.datetime "updated_at",                                                   null: false
     t.boolean  "promotionable",                                default: true
     t.string   "meta_title"
-    t.decimal  "avg_rating",           precision: 7, scale: 5, default: 0.0,  null: false
-    t.integer  "reviews_count",                                default: 0,    null: false
+    t.decimal  "avg_rating",           precision: 7, scale: 5, default: 0.0,   null: false
+    t.integer  "reviews_count",                                default: 0,     null: false
+    t.boolean  "featured",                                     default: false
   end
 
   add_index "spree_products", ["available_on"], name: "index_spree_products_on_available_on"
@@ -828,6 +834,7 @@ ActiveRecord::Schema.define(version: 20151103121612) do
     t.decimal  "promo_total",          precision: 10, scale: 2, default: 0.0
     t.decimal  "included_tax_total",   precision: 10, scale: 2, default: 0.0, null: false
     t.decimal  "pre_tax_amount",       precision: 12, scale: 4, default: 0.0, null: false
+    t.decimal  "supplier_commission",  precision: 8,  scale: 2, default: 0.0, null: false
   end
 
   add_index "spree_shipments", ["address_id"], name: "index_spree_shipments_on_address_id"
@@ -981,6 +988,7 @@ ActiveRecord::Schema.define(version: 20151103121612) do
     t.boolean  "backorderable_default",  default: false
     t.boolean  "propagate_all_variants", default: true
     t.string   "admin_name"
+    t.integer  "supplier_id"
   end
 
   add_index "spree_stock_locations", ["active"], name: "index_spree_stock_locations_on_active"
@@ -988,6 +996,7 @@ ActiveRecord::Schema.define(version: 20151103121612) do
   add_index "spree_stock_locations", ["country_id"], name: "index_spree_stock_locations_on_country_id"
   add_index "spree_stock_locations", ["propagate_all_variants"], name: "index_spree_stock_locations_on_propagate_all_variants"
   add_index "spree_stock_locations", ["state_id"], name: "index_spree_stock_locations_on_state_id"
+  add_index "spree_stock_locations", ["supplier_id"], name: "index_spree_stock_locations_on_supplier_id"
 
   create_table "spree_stock_movements", force: :cascade do |t|
     t.integer  "stock_item_id"
@@ -1032,6 +1041,57 @@ ActiveRecord::Schema.define(version: 20151103121612) do
   add_index "spree_stores", ["code"], name: "index_spree_stores_on_code"
   add_index "spree_stores", ["default"], name: "index_spree_stores_on_default"
   add_index "spree_stores", ["url"], name: "index_spree_stores_on_url"
+
+  create_table "spree_supplier_bank_accounts", force: :cascade do |t|
+    t.string   "masked_number"
+    t.integer  "supplier_id"
+    t.string   "token"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "country_iso"
+    t.string   "name"
+  end
+
+  add_index "spree_supplier_bank_accounts", ["supplier_id"], name: "index_spree_supplier_bank_accounts_on_supplier_id"
+  add_index "spree_supplier_bank_accounts", ["token"], name: "index_spree_supplier_bank_accounts_on_token"
+
+  create_table "spree_supplier_variants", force: :cascade do |t|
+    t.integer  "supplier_id"
+    t.integer  "variant_id"
+    t.decimal  "cost"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "spree_supplier_variants", ["supplier_id"], name: "index_spree_supplier_variants_on_supplier_id"
+  add_index "spree_supplier_variants", ["variant_id"], name: "index_spree_supplier_variants_on_variant_id"
+
+  create_table "spree_suppliers", force: :cascade do |t|
+    t.boolean  "active",                                               default: false, null: false
+    t.integer  "address_id"
+    t.decimal  "commission_flat_rate",         precision: 8, scale: 2, default: 0.0,   null: false
+    t.float    "commission_percentage",                                default: 0.0,   null: false
+    t.string   "email"
+    t.string   "name"
+    t.string   "url"
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "tax_id"
+    t.string   "token"
+    t.string   "slug"
+    t.string   "profile_picture_file_name"
+    t.string   "profile_picture_content_type"
+    t.integer  "profile_picture_file_size"
+    t.datetime "profile_picture_updated_at"
+    t.text     "bio"
+  end
+
+  add_index "spree_suppliers", ["active"], name: "index_spree_suppliers_on_active"
+  add_index "spree_suppliers", ["address_id"], name: "index_spree_suppliers_on_address_id"
+  add_index "spree_suppliers", ["deleted_at"], name: "index_spree_suppliers_on_deleted_at"
+  add_index "spree_suppliers", ["slug"], name: "index_spree_suppliers_on_slug", unique: true
+  add_index "spree_suppliers", ["token"], name: "index_spree_suppliers_on_token"
 
   create_table "spree_tax_categories", force: :cascade do |t|
     t.string   "name"
@@ -1181,11 +1241,13 @@ ActiveRecord::Schema.define(version: 20151103121612) do
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
+    t.integer  "supplier_id"
   end
 
   add_index "spree_users", ["deleted_at"], name: "index_spree_users_on_deleted_at"
   add_index "spree_users", ["email"], name: "email_idx_unique", unique: true
   add_index "spree_users", ["spree_api_key"], name: "index_spree_users_on_spree_api_key"
+  add_index "spree_users", ["supplier_id"], name: "index_spree_users_on_supplier_id"
 
   create_table "spree_variants", force: :cascade do |t|
     t.string   "sku",                                        default: "",    null: false

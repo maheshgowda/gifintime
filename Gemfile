@@ -44,16 +44,19 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
 
-  gem 'spree', '3.0.4'
+  gem 'spree', '3.0.7'
   gem 'spree_gateway', github: 'spree/spree_gateway', branch: '3-0-stable'
   gem 'spree_auth_devise', github: 'spree/spree_auth_devise', branch: '3-0-stable'
   gem 'spree_wishlist', github: 'spree-contrib/spree_wishlist', branch: '3-0-stable'
   gem 'spree_email_to_friend', github: 'spree-contrib/spree_email_to_friend', branch: '3-0-stable'
   gem 'spree_i18n', git: 'git://github.com/spree/spree_i18n.git', branch: '3-0-stable'
-  gem 'spree_reviews', github: 'spree-contrib/spree_reviews', branch: '3-0-stable'
-  gem 'spree_slider', github: 'spree-contrib/spree_slider'
+  #gem 'spree_slider', github: 'spree-contrib/spree_slider'
   gem 'spree_editor', github: 'spree-contrib/spree_editor', branch: '3-0-stable'
   gem 'spree_static_content', github: 'spree-contrib/spree_static_content', branch: '3-0-stable'
-  gem 'spree_related_products', github: 'spree-contrib/spree_related_products', branch: '3-0-stable'
+  #gem 'spree_related_products', github: 'spree-contrib/spree_related_products', branch: '3-0-stable'
   gem 'spree_imagezoom', :git => 'git://github.com/kunalchaudhari/spree_imagezoom.git'
+  gem 'spree_drop_ship', :git => 'git://github.com/grmahesh/spree_drop_ship.git', branch: '3-0-stable'
+  gem 'stripe'
+  gem 'spree_marketplace', github: 'firman/spree_marketplace'
+  gem 'spree_simple_reports', github: 'maheshgowda/spree_simple_reports'
 end
